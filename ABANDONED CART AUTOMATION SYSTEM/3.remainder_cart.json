@@ -1,0 +1,175 @@
+{
+  "name": "3.remainder_cart",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -800,
+        -32
+      ],
+      "id": "65381eb6-33ac-4851-b946-1856ea1e3205",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo",
+          "mode": "list",
+          "cachedResultName": "CART",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "cart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "cart"
+            },
+            {
+              "lookupColumn": "reminderSent",
+              "lookupValue": "No"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -576,
+        -32
+      ],
+      "id": "7736f8db-772e-48fe-83d0-8a05d1ce09bf",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RQvHG6Uaie37kIh2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d48c4cdf-8ccc-4227-a14b-7119e4ca4beb",
+              "leftValue": "={{ $now }}",
+              "rightValue": "={{ DateTime.fromISO($json.cartTime).plus({ minutes : 30 }) }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -352,
+        -32
+      ],
+      "id": "5bea934d-e108-4bd5-877d-c8233420cb1f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Waiting your cart Item",
+        "message": "=<html>\n<p>Hello, {{ $json.customerName }}\n\n<p>We have niticed that tou acaart has item</p>\n\n<p>product Name : {{ $json.product }}</p>\n\n<p>You left your Item in your cart </p>\n\n<p>Please complete your purchase </p>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -160
+      ],
+      "id": "0feecc4d-94ae-4a7f-b4e7-61c4d2b9ee4e",
+      "name": "Send a message",
+      "webhookId": "7c764a8f-fc04-4bb9-a29f-70d7b651213c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "djUbWqHWZuyGTcSU",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d5621a45-1a99-4e77-85f3-163b4d47a965",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0954099939eda546a80bd4c54a61825144b2def4823a0280b3438ca09450d111"
+  },
+  "nodeGroups": [],
+  "id": "RnP0mKFZNUcrQq3K",
+  "tags": []
+}

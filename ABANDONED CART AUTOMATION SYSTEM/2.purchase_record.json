@@ -1,0 +1,228 @@
+{
+  "name": "2.purchase_record",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "purchase",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        32
+      ],
+      "id": "deda45df-cf77-41a7-bdbe-dd648d0d0fcd",
+      "name": "Webhook",
+      "webhookId": "334f846a-da5b-4352-9cdc-6e8b34863d2b"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo",
+          "mode": "list",
+          "cachedResultName": "CART",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "cart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "email",
+              "lookupValue": "={{ $json.body.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -304,
+        32
+      ],
+      "id": "2753a91a-6dd1-48ff-9dfd-8ed4478dd38a",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RQvHG6Uaie37kIh2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo",
+          "mode": "list",
+          "cachedResultName": "CART",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "cart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "Purchased"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "customerName",
+              "displayName": "customerName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "product",
+              "displayName": "product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cartTime",
+              "displayName": "cartTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "reminderSent",
+              "displayName": "reminderSent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        32
+      ],
+      "id": "43dccf4a-0b68-40af-9129-bf3efadea831",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RQvHG6Uaie37kIh2",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "26e89c41-750a-41e1-a9dc-c5eb58ca32fe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0954099939eda546a80bd4c54a61825144b2def4823a0280b3438ca09450d111"
+  },
+  "nodeGroups": [],
+  "id": "Vrbi1aomAi4UkM6f",
+  "tags": []
+}

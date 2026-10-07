@@ -1,0 +1,162 @@
+{
+  "name": "1.Detect Abandoned Cart",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cart",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        -240
+      ],
+      "id": "b5cc0462-88a4-42ed-85a3-195d072e17b1",
+      "name": "Webhook",
+      "webhookId": "6500b789-d8d3-42c0-9926-245117e5efec"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo",
+          "mode": "list",
+          "cachedResultName": "CART",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "cart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Er16A7qaXxcDDJgL8b1EnfRAnsJkxst7toVpbk0vIyo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "customerName": "={{ $json.body.customerName }}",
+            "email": "={{ $json.body.email }}",
+            "product": "={{ $json.body.productName }}",
+            "phone": "={{ $json.body.phone }}",
+            "status": "cart",
+            "cartTime": "={{ $now }}",
+            "reminderSent": "No"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "customerName",
+              "displayName": "customerName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "product",
+              "displayName": "product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cartTime",
+              "displayName": "cartTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminderSent",
+              "displayName": "reminderSent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -912,
+        -240
+      ],
+      "id": "15eeb4aa-1ad9-430c-81e1-9bbe69f07870",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RQvHG6Uaie37kIh2",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d68dc8d7-7acc-4618-a4e5-d1905c73a269",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0954099939eda546a80bd4c54a61825144b2def4823a0280b3438ca09450d111"
+  },
+  "nodeGroups": [],
+  "id": "zLWdFegEOzXm1K3i",
+  "tags": []
+}
