@@ -1,0 +1,211 @@
+{
+  "name": "AUTOMATED CERTIFICATE PDF GENERATION & EMAIL DELIVERY",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -944,
+        -256
+      ],
+      "id": "408371b1-8a13-48c6-ac6e-729db389967f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cWLqiXPXEHy48Zw8w6XyXTYilv25eTZ4Qde1QD32WB4",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Form (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cWLqiXPXEHy48Zw8w6XyXTYilv25eTZ4Qde1QD32WB4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2116570021,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cWLqiXPXEHy48Zw8w6XyXTYilv25eTZ4Qde1QD32WB4/edit#gid=2116570021"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -720,
+        -256
+      ],
+      "id": "f04c0bcb-1cca-4338-b4da-2cc839d8e11b",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RQvHG6Uaie37kIh2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let items = $input.all();\n\nlet html = `\n  <html>\n    <head>\n      <title>Customer Feddback report</title>\n    </head>\n    <body>\n`;\n\nfor(let item of items)\n{\n  const name = item.json.Name;\n  const email = item.json.Email;\n  const feedabck = item.json.Feedback;\n\n  html += `<p>Customer Name : ${name}</p>`;\n  html += `<p>Customer Email : ${email}</p>`;\n  html += `<p>Feedback : ${feedabck}</p>`;\n  html += `<hr>`;\n}\n\nhtml += `\n</body>\n</html>\n`\n\nreturn[\n  {\n    json : {\n      html : html\n    }\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        -256
+      ],
+      "id": "1d2fc481-2b8c-4503-81a0-d0f567e662c3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "aryanparmar5116@gmail.com",
+        "subject": "Weekly Statment",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        112,
+        -256
+      ],
+      "id": "9e7b6294-e21f-4e21-b1a2-cabdc07f9662",
+      "name": "Send a message",
+      "webhookId": "df30710c-9974-4377-8206-7c9501b08fd4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "djUbWqHWZuyGTcSU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "html",
+        "options": {
+          "fileName": "index.html"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -272,
+        -256
+      ],
+      "id": "be44df78-a2ac-4bfb-973a-18a0672a5181",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/forms/chromium/convert/html",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -96,
+        -256
+      ],
+      "id": "dd0c439c-d4b4-4932-ba3b-84109a76d313",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3ba1d9d6-c9b0-4813-95bb-7b07cd3d6967",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0954099939eda546a80bd4c54a61825144b2def4823a0280b3438ca09450d111"
+  },
+  "nodeGroups": [],
+  "id": "TPFdRhE4cjAQqDlG",
+  "tags": []
+}
